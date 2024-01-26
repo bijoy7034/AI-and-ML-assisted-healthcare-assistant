@@ -17,3 +17,18 @@ def home(request):
 
 def registerView(request):
 	return render(request, 'register.html')
+
+def registerUser(request):
+	if request.method == 'POST':
+		username = request.POST['username']
+		email = request.POST['email']
+		password = request.POST['password']
+		password = make_password(password)
+
+		a = User(username=username, email=email, password=password, is_patient=True)
+		a.save()
+		messages.success(request, 'Account Was Created Successfully')
+		return redirect('reg')
+	else:
+		messages.error(request, 'Failed To Register, Try Again Later')
+		return redirect('reg')
