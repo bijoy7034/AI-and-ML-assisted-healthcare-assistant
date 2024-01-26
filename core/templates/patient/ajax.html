@@ -33,7 +33,7 @@ $(document).ready(function(){
 
        	mydata = {id:id,s2:s2, s3:s3, s4:s4, s5:s5,s1:s1};
 		$.ajax({
-			url: "{% url 'predict' %}",
+			url: "",
 			method: "POST",
 			data:mydata,
 
@@ -63,7 +63,7 @@ $(document).ready(function(){
 
 	mydata = {disease:disease, userid:userid};
 		$.ajax({
-			url: "{% url 'ment' %}",
+			url: "",
 			method: "POST",
 			data:mydata,
 
