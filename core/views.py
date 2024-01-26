@@ -93,3 +93,6 @@ def create_profile(request):
 
 
 
+def logoutView(request):
+	logout(request)
+	return redirect('login')
