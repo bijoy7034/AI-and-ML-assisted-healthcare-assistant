@@ -1,9 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
-
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: Quicksand;
 }
 
 body {
@@ -448,4 +449,38 @@ body {
     .box {
       width: 80%;
     }
+  }
+
+
+
+
+  /* admin */
+  .sidebar {
+    height: 90%;
+    background-color: #202020a7;
+    margin: 14px;
+    padding: 10px;
+    border-radius: 10px;
+    }
+
+    .heading{
+      color: rgb(12, 56, 149);
+      text-align: center;
+    }
+    .modal-content{
+      background-color: #202020a7;
+    }
+
+    .form-control {
+      border: none;
+      color: white;
+      background-color: rgba(34, 39, 45, 0.528);
+  }
+  
+  .form-control:focus {
+    color: white;
+      background-color: rgba(30, 34, 39, 0.545);
+  }
+  #result{
+    color: white;
   }
