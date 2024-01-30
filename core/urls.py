@@ -14,6 +14,8 @@ path('patient/', views.patient_home, name='patient'),
 path('create_profile/', views.create_profile, name='create_profile'),
 path('diagnosis/', views.diagnosis, name='diagnosis'),
 path('diagnosis/predict', views.MakePredict, name='predict'),
+path("location/", views.locationServices, name="location"),
+path('result/', views.patient_result, name='result'),
 
 path('logout/', views.logoutView, name='logout'),
 ]

@@ -251,14 +251,14 @@ body{
     overflow: visible;
   }
   
-  button,
+  /* button,
   select {
     text-transform: none;
   }
   
   select {
     word-wrap: normal;
-  }
+  } */
   
   button,
   [type="button"],
@@ -2071,10 +2071,10 @@ body{
     opacity: 1;
   }
   
-  select.form-control:focus::-ms-value {
+  /* select.form-control:focus::-ms-value {
     color: #495057;
     background-color: #fff;
-  }
+  } */
   
   .form-control-file,
   .form-control-range {
@@ -2138,10 +2138,10 @@ body{
     border-radius: 0.3rem;
   }
   
-  select.form-control[size], select.form-control[multiple] {
+  /* select.form-control[size], select.form-control[multiple] {
     height: auto;
   }
-  
+   */
   textarea.form-control {
     height: auto;
   }

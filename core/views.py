@@ -143,6 +143,16 @@ def MakePredict(request):
 
 	return JsonResponse({'status':result})			
 
+def locationServices(request):
+    context = {'status':'1'}
+    return render(request, "patient/location.html", context)
+
+
+def patient_result(request):
+	user_id = request.user.id
+	disease = Medical.objects.all().filter(patient_id=user_id)
+	context = {'disease':disease, 'status':'1'}
+	return render(request, 'patient/result.html', context)
 
 
 

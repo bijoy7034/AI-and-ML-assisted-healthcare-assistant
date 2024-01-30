@@ -484,3 +484,16 @@ body {
   #result{
     color: white;
   }
+
+  table{
+    color: white;
+    max-height: 400px;
+    overflow-y: auto; 
+  }
+  .table-container {
+    color: white;
+    max-height: 400px; /* Set the desired height for the table container */
+    overflow-y: scroll; /* Enable vertical scrolling */
+  }
+
+  
