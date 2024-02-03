@@ -487,13 +487,40 @@ body {
 
   table{
     color: white;
-    max-height: 400px;
-    overflow-y: auto; 
+
+    overflow-y: scroll; 
   }
   .table-container {
-    color: white;
-    max-height: 400px; /* Set the desired height for the table container */
+    color: white; /* Set the desired height for the table container */
     overflow-y: scroll; /* Enable vertical scrolling */
   }
 
-  
+  .accordion-toggle {
+    cursor: pointer;
+  }
+
+  .collapse.in {
+    display: table-row-group;
+  }
+
+  .table-row {
+    display: none;
+  }
+
+  .fade.in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0.1;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .hospital_card{
+    border: solid white;
+    background-color: #03A9F4;
+  }

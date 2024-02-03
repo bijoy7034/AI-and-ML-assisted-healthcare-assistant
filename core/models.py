@@ -20,6 +20,7 @@ class Medical(models.Model):
     patient = models.ForeignKey(User, related_name="patient", on_delete= models.CASCADE)
     doctor = models.ForeignKey(User, related_name="doctor", on_delete= models.CASCADE, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
+    appointment = models.BooleanField(default = False)
 
     def __str__(self):
         return self.disease
@@ -42,7 +43,19 @@ class Profile(models.Model):
     birth_date = models.DateField(default='None')
     region = models.CharField(max_length=255, default='')
     gender = models.CharField(max_length=255)
-    country = models.CharField(max_length=255, default='Tanzania')
+    phonenumber = models.CharField(max_length=200,null=True)
+    email = models.EmailField(max_length=254, null=True)
+    country = models.CharField(max_length=255, default='')
 
     def __str__(self):
         return self.country
+
+class Hospitals(models.Model):
+    Hospital_Name = models.CharField(max_length=255, default='')
+    District = models.CharField(max_length=255, default='')
+    CityTown = models.CharField(max_length=255, default='')
+    Pincode = models.CharField(max_length=255, default='')
+    Address = models.CharField(max_length=255, default='')
+    
+    def __str__(self):
+        return self.Hospital_Name

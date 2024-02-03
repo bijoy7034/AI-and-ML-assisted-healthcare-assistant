@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .models import Medical, User, Ment, Profile
+from .models import Medical, User, Ment, Profile, Hospitals
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -75,11 +75,13 @@ def create_profile(request):
 	if request.method == 'POST':
 		birth_date = request.POST['birth_date']
 		region = request.POST['region']
+		email = request.POST['email']
+		phonenumber = request.POST['phone']
 		country = request.POST['country']
 		gender = request.POST['gender']
 		user_id = request.user.id
 
-		Profile.objects.filter(id = user_id).create(user_id=user_id, birth_date=birth_date, gender=gender, region=region)
+		Profile.objects.filter(id = user_id).create(user_id=user_id, birth_date=birth_date, gender=gender, region=region, country=country, phonenumber=phonenumber, email=email)
 		messages.success(request, 'Your Profile Was Created Successfully')
 		return redirect('patient')
 	else:
@@ -144,8 +146,17 @@ def MakePredict(request):
 	return JsonResponse({'status':result})			
 
 def locationServices(request):
-    context = {'status':'1'}
-    return render(request, "patient/location.html", context)
+    hosp = []
+    context = {'hospitals': hosp,'status':'1'}
+    if request.method == 'POST':
+        dist = request.POST.get('district')
+        hosp = Hospitals.objects.all().filter(District = dist)
+        print(hosp)
+        context = {'hospitals': hosp, 'status':'1'}
+        return render(request, "patient/location.html", context)
+    else:
+    	return render(request, "patient/location.html", context)
+    
 
 
 def patient_result(request):
@@ -155,6 +166,40 @@ def patient_result(request):
 	return render(request, 'patient/result.html', context)
 
 
+@csrf_exempt
+def MakeMent(request):
+	disease = request.POST.get('disease')
+	userid = request.POST.get('userid')
+	try:
+		check_medical = Ment.objects.filter(medical_id=disease).exists()
+		if(check_medical == False):
+			a = Ment(medical_id=disease, patient_id=userid)
+			app = Medical.objects.get(id=disease) 
+			app.appointment = True
+			a.save()
+			app.save()
+			return JsonResponse({'status':'saved'})
+		else:
+			print('Appointment Exist')
+			return JsonResponse({'status':'exist'})
+	except Exception as e:
+		return JsonResponse({'status':'error'})		
+
+
+
+
+def patient_ment(request):
+	user_id = request.user.id
+	appointment = Ment.objects.all().filter(patient_id=user_id)
+	context = {'ment':appointment, 'status':'1'}
+	return render(request, 'patient/ment.html', context)
+
+
+def profile_details(request):
+    user_id = request.user.id
+    profile = Profile.objects.all()
+    context = {'profile': profile, 'status' : '1'}
+    return render(request, 'patient/profile.html', context)
 
 
 def logoutView(request):

@@ -53,7 +53,7 @@ $(document).ready(function(){
 
 
   // Make Appointment
-  $('#tbody').on("click", ".btn_ment", function(){
+   $('#tbody').on("click", ".btn_ment", function(){
   	console.log('Button Appointment Clicked');
 	let disease = $(this).attr("data-sid");
 	var userid = $('#tbody #user_id').val();
@@ -63,7 +63,7 @@ $(document).ready(function(){
 
 	mydata = {disease:disease, userid:userid};
 		$.ajax({
-			url: "",
+			url: "{% url 'ment' %}",
 			method: "POST",
 			data:mydata,
 
@@ -75,6 +75,7 @@ $(document).ready(function(){
 				if(x == 'saved'){
 					$('#ment_result').html("");
 					$('#ment_result').append('Appointment Was Successfully Requested');
+					location.reload();
 				}else if(x == 'exist'){
 					$('#ment_result').html("");
 					$('#ment_result').append('Appointment Request Exist');
@@ -85,8 +86,6 @@ $(document).ready(function(){
 			}
 		});
   });
-
-
 
 
   // Make Appointment
@@ -100,7 +99,7 @@ $(document).ready(function(){
 
 	mydata = {disease:disease, userid:userid};
 		$.ajax({
-			url: "",
+			url: "{% url 'ment' %}",
 			method: "POST",
 			data:mydata,
 

@@ -27,14 +27,15 @@
                 <span class="ml-2">Patient Dashboard</span>
             </a>
         </li>
+        
+    
+        {% if status == '1' %}
         <li class="nav-item active">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{% url 'profile'%}">
                 <i class="fa-solid fa-user text-secondary"></i>
                 <span class="ml-2">Profile</span>
             </a>
         </li>
-    
-        {% if status == '1' %}
          <li class="nav-item">
             <a class="nav-link" href="{% url 'diagnosis'%}">
                 <i class="fa-solid fa-stethoscope"></i>
@@ -50,7 +51,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{% url 'ment_list' %}">
                 <i class="fa-solid fa-wheelchair-move"></i>
                 <span class="ml-2" style="color: white">Appointment</span>
             </a>
