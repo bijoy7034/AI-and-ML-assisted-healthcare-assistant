@@ -42,8 +42,8 @@ The admin panel serves as the nerve center for system oversight. Administrators 
 - Data Preprocessing Tools: Pandas, NumPy
 - NLP Libraries: NLTK
 - Geolocation Services: Google Maps API
-- Web Development Frameworks: Django (backend), React (frontend)
-- Authentication and Authorization: Python, OAuth
+- Web Development Frameworks: Django
+- Authentication and Authorization: Python
 - Database Management: MySQL
 
 ## Ethical Considerations
