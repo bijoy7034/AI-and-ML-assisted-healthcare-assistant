@@ -146,6 +146,7 @@
  {% endblock %}
 
 
+ <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -159,4 +160,124 @@
 {% include 'patient/ajax.html' %}
 
 
-{% block javascript %}{% endblock %}
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+ <script>
+    var options = {
+        title: {
+            text: 'Prediction',
+            align: 'left',
+            style: {
+              fontSize: "16px",
+              color: '#fff'
+            }
+          },
+        series: [44, 55, 41, 17, 15],
+        labels: ['Apple', 'Mango', 'Orange', 'Watermelon', 'test'],
+      chart: {
+        type: 'donut',
+        foreColor: '#ffffff'
+      },
+      theme: {
+        mode: 'light', 
+        palette: 'palette', 
+        monochrome: {
+            enabled: true,
+            color: '#409a19',
+            shadeTo: 'dark',
+            shadeIntensity: 0.65
+        },
+    },
+      stroke:{
+        colors:['#000']
+       },
+      plotOptions: {
+        pie: {
+          expandOnClick: false
+        }
+      },
+      data: {
+        chartOptions: {
+          colors: ['#FDD835', '#FDD835', '#FDD835', '#5A2A27', '#C4BBAF']
+        },
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: '100%'
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }],
+      datasets: [{
+        borderColor: ["#202020"]
+      }]
+      };
+
+ var chart = new ApexCharts(document.getElementById("chart"), options);
+ chart.render();
+    
+ 
+
+
+ var options = {
+    series: [{
+    name: 'Sales',
+    data: [4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5]
+  }],
+    chart: {
+    height: 350,
+    type: 'line',
+  },
+  forecastDataPoints: {
+    count: 7
+  },
+  stroke: {
+    width: 5,
+    curve: 'smooth'
+  },
+  xaxis: {
+    type: 'datetime',
+    categories: ['1/11/2000', '2/11/2000', '3/11/2000', '4/11/2000', '5/11/2000', '6/11/2000', '7/11/2000', '8/11/2000', '9/11/2000', '10/11/2000', '11/11/2000', '12/11/2000', '1/11/2001', '2/11/2001', '3/11/2001','4/11/2001' ,'5/11/2001' ,'6/11/2001'],
+    tickAmount: 10,
+    labels: {
+      formatter: function(value, timestamp, opts) {
+        return opts.dateFormatter(new Date(timestamp), 'dd MMM')
+      }
+    }
+  },
+  title: {
+    text: 'Prediction',
+    align: 'left',
+    style: {
+      fontSize: "16px",
+      color: '#fff'
+    }
+  },
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shade: 'dark',
+      gradientToColors: [ '#FDD835'],
+      shadeIntensity: 1,
+      type: 'horizontal',
+      opacityFrom: 1,
+      opacityTo: 1,
+      stops: [0, 100, 100, 100]
+    },
+  },
+  yaxis: {
+    min: -10,
+    max: 40
+  }
+  };
+
+  var chart2 = new ApexCharts(document.querySelector("#chart2"), options);
+  chart2.render();
+    
+    
+ </script>
+{% endblock %}

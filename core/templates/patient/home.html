@@ -9,7 +9,7 @@
         <div class="container-fluid ">
 
             <!-- Breadcrumbs-->
-            <ol class="breadcrumb" style="background-color: #20202097;">
+            <ol class="breadcrumb" style="background-color: #202020;">
                 <li class="breadcrumb-item">
                     <a href="">Dashboard</a>
                 </li>
@@ -21,7 +21,7 @@
 
 
                     <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white o-hidden h-100">
+                    <div class="card text-white o-hidden h-100" style="border-radius: 20px;">
                         <div class="card-body">
                             <div class="card-body-icon">
                                 <i class="fas fa-capsules text-success"></i>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-primary o-hidden h-100">
+                    <div class="card text-white bg-primary o-hidden h-100" style="border-radius: 20px;">
                         <div class="card-body">
                             <div class="card-body-icon">
                                 <i class="fas fa-diagnoses text-danger" ></i>
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-warning o-hidden h-100">
+                    <div class="card text-white bg-warning o-hidden h-100" style="border-radius: 20px;">
                         <div class="card-body">
                             <div class="card-body-icon">
                                 <i class="fas fa-book-medical text-primary"></i>
@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-danger o-hidden h-100">
+                    <div class="card text-white bg-danger o-hidden h-100" style="border-radius: 20px;">
                         <div class="card-body">
                             <div class="card-body-icon">
                                 <i class="fas fa-user-md text-warning"></i>
@@ -91,10 +91,10 @@
                     </div>
                 </div>
             </div>
-          <center>
+          {% comment %} <center>
             <i class="fa-solid fa-bed-pulse mt-4 pt-5" style="font-size: 200px;"></i><br>
             <p class="mt-2">Uncover potential health insights and predictions tailored <br> to your unique profile</p>
-          </center>
+          </center> {% endcomment %}
 
             {% if profile_status %}
 
@@ -120,11 +120,23 @@
             </div>
             {% endif %}
             
+            <br>
+
+            <div class="container-fluid d-flex justify-content-center">
+                <div id="chart" class="p-2"  style="width: 100%; background-color: #202020; border-radius: 20px;"></div>
+                <div class="p-2"></div>
+            <div id="chart2" class="p-2" style="width: 100%; background-color: #202020; border-radius: 20px;"></div>
+            </div>
+
+          
             
         </div>
         
         </div>
+        
 
+
+        
 
 {% endblock %}
 

@@ -10,7 +10,7 @@
 body {
   font-family: "Poppins", sans-serif;
   overflow-x: hidden;
-  background-color: #000;
+  background-color: #171717;
 }
 
 .header {
@@ -457,7 +457,7 @@ body {
   /* admin */
   .sidebar {
     height: 90%;
-    background-color: #202020a7;
+    background-color:#202020;
     margin: 14px;
     padding: 10px;
     border-radius: 10px;

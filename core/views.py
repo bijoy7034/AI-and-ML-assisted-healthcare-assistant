@@ -197,7 +197,7 @@ def patient_ment(request):
 
 def profile_details(request):
     user_id = request.user.id
-    profile = Profile.objects.all()
+    profile = Profile.objects.all().filter(user_id=user_id)
     context = {'profile': profile, 'status' : '1'}
     return render(request, 'patient/profile.html', context)
 
