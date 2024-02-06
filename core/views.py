@@ -204,12 +204,29 @@ def profile_details(request):
 
 def medical_profile(request):
     user_id = request.user.id
-    profile = Profile.objects.all().filter(user_id=user_id).first()
+    profile = Profile.objects.get(user_id=user_id)
     print(profile.medical_profile)
+    if request.method == 'POST':
+        w =request.POST.get('weight')
+        h = request.POST.get('height')
+        profile.height = request.POST.get('height')
+        profile.weight = request.POST.get('weight')
+        profile.allergies = request.POST.get('allergic')
+        profile.blood_type = request.POST.get('group')
+        profile.blood_low = request.POST.get('low')
+        profile.blood_high = request.POST.get('high')
+        profile.medications = request.POST.get('meds')
+        profile.family_history = request.POST.get('fam')
+        profile.past_medical = request.POST.get('past')
+        profile.medical_profile = True
+        h = (float(h))/100
+        bmi = (float(w))/(h**2)
+        profile.bmi = bmi
+        profile.save()
     if profile.medical_profile == False:
         context = {'profile': profile, 'status' : '1', 'health' : '0'}
         return render(request, 'patient/healthprofile.html', context)
-    context = {'profile': profile, 'status' : '1'}
+    context = {'profile': profile, 'status' : '1', }
     return render(request, 'patient/healthprofile.html', context)
 
 def logoutView(request):

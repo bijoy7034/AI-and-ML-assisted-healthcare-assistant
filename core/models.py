@@ -56,6 +56,7 @@ class Profile(models.Model):
     blood_low = models.IntegerField(null =True)
     blood_high = models.IntegerField(null =True)
     medications = models.CharField(max_length=255, null = True)
+    bmi = models.DecimalField(max_digits = 7,decimal_places=2, null= True)
 
     def __str__(self):
         return self.country
