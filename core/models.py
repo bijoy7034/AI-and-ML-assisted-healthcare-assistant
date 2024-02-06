@@ -46,6 +46,16 @@ class Profile(models.Model):
     phonenumber = models.CharField(max_length=200,null=True)
     email = models.EmailField(max_length=254, null=True)
     country = models.CharField(max_length=255, default='')
+    height = models.DecimalField(max_digits=5, decimal_places=2, null = True) 
+    weight = models.DecimalField(max_digits=5, decimal_places=2, null = True)  
+    blood_type = models.CharField(max_length=3 , null = True) 
+    allergies = models.CharField(max_length=255, blank=True, null = True) 
+    past_medical = models.CharField(max_length=255, null = True)
+    family_history = models.CharField(max_length=255, null = True)
+    medical_profile = models.BooleanField(default= False)
+    blood_low = models.IntegerField(null =True)
+    blood_high = models.IntegerField(null =True)
+    medications = models.CharField(max_length=255, null = True)
 
     def __str__(self):
         return self.country
@@ -59,3 +69,12 @@ class Hospitals(models.Model):
     
     def __str__(self):
         return self.Hospital_Name
+    
+class WeightRecord(models.Model):
+    user = models.IntegerField(null = False)
+    date = models.DateField(auto_now_add=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=2)  # 999.99 kg
+    note = models.CharField(max_length=255, blank=True)  # Optional note
+
+    class Meta:
+        ordering = ['-date']  # Order records by most recent first

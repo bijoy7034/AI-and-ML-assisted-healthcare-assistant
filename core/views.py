@@ -64,7 +64,7 @@ def patient_home(request):
 	user_id = request.user.id
 	user_profile = Profile.objects.filter(user_id=user_id)
 	if not user_profile:
-		context = {'profile_status':'Please Create Profile To Continue', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3}
+		context = {'profile_status':'Please Create Profile To Continue', 'status': '0', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3}
 		return render(request, 'patient/home.html', context)
 	else:
 		context = {'status':'1', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3}
@@ -201,6 +201,16 @@ def profile_details(request):
     context = {'profile': profile, 'status' : '1'}
     return render(request, 'patient/profile.html', context)
 
+
+def medical_profile(request):
+    user_id = request.user.id
+    profile = Profile.objects.all().filter(user_id=user_id).first()
+    print(profile.medical_profile)
+    if profile.medical_profile == False:
+        context = {'profile': profile, 'status' : '1', 'health' : '0'}
+        return render(request, 'patient/healthprofile.html', context)
+    context = {'profile': profile, 'status' : '1'}
+    return render(request, 'patient/healthprofile.html', context)
 
 def logoutView(request):
 	logout(request)

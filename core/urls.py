@@ -19,5 +19,7 @@ path('result/', views.patient_result, name='result'),
 path('profile/', views.profile_details, name="profile"),    
 path('result/ment', views.MakeMent, name='ment'),
 path('ment/', views.patient_ment, name='ment_list'),
+path('medical_profile/', views.medical_profile, name='med_pro'),
+
 path('logout/', views.logoutView, name='logout'),
 ]
