@@ -42,10 +42,15 @@
     <div class="container" >
       <div class="d-flex justify-content-between align-items-center">
         <h3>Medical Profile</h3>
-        <button class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+        <br><br>
+        <div>
+          <button class="btn btn-primary" data-toggle="modal"
+          data-target=".bd-example-modal-lg"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+          <a href="{% url 'weight' %}"><button class="btn btn-success"><i class="fa-solid fa-person-walking"></i> Goals</button></a>
+        </div>
       </div>
       <div class="row">
-        <table class="table w-50 text-light table-dark profile_table col-md-8 " style="background-color: #202020; border-radius: 14px;" >
+        <table class="table w-50 text-light table-dark profile_table col-md-8 p-5" style="background-color: #202020; border-radius: 14px;" >
           <tr style="">
             <td style="border: none !important; width: max-content;" class="text-primary">Height</td>
             <td style="border: none !important;">:</td>
@@ -99,7 +104,6 @@
             <h3 class="text-primary">Insights</h3>
             <div class="alert border-dark">
               <p class="text-light" data-toggle="tooltip" data-placement="top" title="Tooltip on top">BMI : {{profile.bmi}}</p>
-            
             {% if profile.bmi < 18.5 %}
               <span class="text-warning">Underweight</span>
             {% elif profile.bmi > 18.5  and profile.bmi < 24.9 %}
@@ -110,6 +114,8 @@
              <span class="text-danger">Obesity</span>
             {% endif %}
             </div>
+
+            
               
           </div>
         </div>

@@ -75,7 +75,9 @@ class WeightRecord(models.Model):
     user = models.IntegerField(null = False)
     date = models.DateField(auto_now_add=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2)  # 999.99 kg
-    note = models.CharField(max_length=255, blank=True)  # Optional note
+    sleep = models.DecimalField(max_digits=5, decimal_places = 2, blank=True) 
+    blood_low = models.IntegerField(null =True)
+    blood_high = models.IntegerField(null =True)
 
     class Meta:
         ordering = ['-date']  # Order records by most recent first

@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .models import Medical, User, Ment, Profile, Hospitals
+from .models import Medical, User, Ment, Profile, Hospitals, WeightRecord
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +8,7 @@ from django.contrib import auth
 import numpy as np
 import os
 from django.contrib import messages
+from datetime import datetime
 import joblib as joblib
 from django.contrib.auth.hashers import make_password
 
@@ -222,12 +223,46 @@ def medical_profile(request):
         h = (float(h))/100
         bmi = (float(w))/(h**2)
         profile.bmi = bmi
+        today_date = datetime.now().date()
+        weight = WeightRecord(user = user_id, date = today_date, weight = w, note = '')
+        weight.save()
         profile.save()
     if profile.medical_profile == False:
         context = {'profile': profile, 'status' : '1', 'health' : '0'}
         return render(request, 'patient/healthprofile.html', context)
     context = {'profile': profile, 'status' : '1', }
     return render(request, 'patient/healthprofile.html', context)
+
+
+def weight(request):
+    user_id = request.user.id
+    today = WeightRecord.objects.filter(date = datetime.now().date()).exists()
+    if today:
+        context = {'status' : '1', 'today' : '1'}
+    else:
+        context = {'status' : '1' , 'today' : '0'}
+    if request.method == 'POST':
+        weight = request.POST.get('weight')
+        low = request.POST.get('low')
+        high = request.POST.get('high')
+        sleep = request.POST.get('hr')
+        w = WeightRecord(user = user_id, date = datetime.now().date(), weight = weight, blood_low = low, blood_high = high, sleep = sleep  )
+        w.save()
+        profile = Profile.objects.get(user_id=user_id)
+        profile.weight = weight
+        profile.blood_low = low
+        profile.blood_high = high
+        h = (float(profile.height))/100
+        bmi = (float(weight))/(h**2)
+        profile.bmi = bmi
+        profile.save()
+        context = {'status' : '1', 'today' : '1'}
+        return render(request, 'patient/weight.html', context)
+    return render(request, 'patient/weight.html', context)
+
+def settings(request):
+    context = {'status' : '1'}
+    return render(request, 'patient/settings.html', context)
 
 def logoutView(request):
 	logout(request)
