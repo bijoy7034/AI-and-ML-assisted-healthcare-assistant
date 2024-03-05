@@ -1,0 +1,101 @@
+{% extends 'doctor/base.html' %} {% block body %}
+
+<div id="content-wrapper">
+  <div class="container-fluid">
+    <!-- Breadcrumbs-->
+    <ol class="breadcrumb" style="background-color: #202020">
+      <li class="breadcrumb-item">
+        <a href="">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active">Doctors</li>
+    </ol>
+
+    <!-- Icon Cards-->
+    <div class="container">
+      <div class="row justify-content-end">
+        <button
+          class="btn btn-success ms-auto"
+          data-toggle="modal"
+          data-target=".bd-example-modal-lg"
+        >
+          Add Doctor
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="modal fade bd-example-modal-lg text-light"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myLargeModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div
+          class="modal-content"
+          style="background-color: #171717; border-radius: 18px"
+        >
+          <div class="modal-header border-0">
+            <h4 class="modal-title text-primary" id="exampleModalLongTitle">
+              Doctor Profile
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true" style="color: aliceblue">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST" class="container p-2">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col">
+                  <label for="exampleFormControlInput1">Name</label>
+                  <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="col">
+                  <label for="exampleFormControlInput1">Specialization</label>
+                  <input type="text" name="spec" class="form-control" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col">
+                  <label for="exampleFormControlInput1">Username</label>
+                  <input type="text" name="username" class="form-control" />
+                </div>
+                <div class="col">
+                  <label for="exampleFormControlInput1">Password</label>
+                  <input type="text" name="password" class="form-control" />
+                </div>
+              </div>
+              <br />
+              <div>
+                <label for="exampleFormControlInput1">Medical Degree(s)</label>
+                <input type="text" name="degree" class="form-control" />
+              </div>
+
+              <div class="modal-footer border-0">
+                <button type="submit" class="btn btn-primary">
+                  Save changes
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>

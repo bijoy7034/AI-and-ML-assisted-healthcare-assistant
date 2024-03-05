@@ -9,6 +9,7 @@
     />
     <link href="{% static 'core/css/sb-admin.css' %}" rel="stylesheet" />
     <link href="{% static 'core/css/home.css' %}" rel="stylesheet" />
+    
     <link
       href="{% static 'core/css/fontawesome-free/css/all.min.css' %}"
       rel="stylesheet"
@@ -41,7 +42,7 @@
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'med_pro'%}">
-                <i class="fa-solid fa-heart-pulse text-secondary"></i>
+              <i class="fa-solid fa-heart-pulse text-secondary"></i>
               <span class="ml-2">Medical Profile</span>
             </a>
           </li>
@@ -193,7 +194,7 @@
       </div>
     </div>
     {% block content %} {% endblock %}
-
+    <script src="{%static 'script.js' %}" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -210,144 +211,223 @@
     {% include 'patient/ajax.html' %} {% block javascript %}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-      var options = {
-        title: {
-          text: "Prediction",
-          align: "left",
-          style: {
-            fontSize: "16px",
-            color: "#fff",
-          },
-        },
-        series: [44, 55, 41, 17, 15],
-        labels: ["Apple", "Mango", "Orange", "Watermelon", "test"],
-        chart: {
-          type: "donut",
-          foreColor: "#ffffff",
-        },
-        theme: {
-          mode: "light",
-          palette: "palette",
-          monochrome: {
-            enabled: true,
-            color: "#409a19",
-            shadeTo: "dark",
-            shadeIntensity: 0.65,
-          },
-        },
-        stroke: {
-          colors: ["#202020"],
-        },
-        plotOptions: {
-          pie: {
-            expandOnClick: false,
-          },
-        },
-        data: {
-          chartOptions: {
-            colors: ["#FDD835", "#FDD835", "#FDD835", "#5A2A27", "#C4BBAF"],
-          },
-        },
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
+      var counts = []
+      var sympt = []
+      
+      {% for item in sympt %}
+        counts.push({{item.1}})
+        sympt.push('{{item.0}}')
+      {% endfor %}
+        
+        
+            var options = {
+              title: {
+                text: "Symptoms Frequency",
+                align: "left",
+                style: {
+                  fontSize: "16px",
+                  color: "#fff",
+                },
+              },
+              series: counts,
+              labels: sympt,
               chart: {
-                width: "100%",
+                type: "donut",
+                foreColor: "#ffffff",
               },
-              legend: {
-                position: "bottom",
+              theme: {
+                mode: "light",
+                palette: "palette",
+                monochrome: {
+                  enabled: true,
+                  color: "#409a19",
+                  shadeTo: "dark",
+                  shadeIntensity: 0.65,
+                },
               },
-            },
-          },
-        ],
-        datasets: [
-          {
-            borderColor: ["#202020"],
-          },
-        ],
-      };
+              stroke: {
+                colors: ["#202020"],
+              },
+              plotOptions: {
+                pie: {
+                  expandOnClick: false,
+                },
+              },
+              data: {
+                chartOptions: {
+                  colors: ["#FDD835", "#FDD835", "#FDD835", "#5A2A27", "#C4BBAF"],
+                },
+              },
+              responsive: [
+                {
+                  breakpoint: 480,
+                  options: {
+                    chart: {
+                      width: "100%",
+                    },
+                    legend: {
+                      position: "bottom",
+                    },
+                  },
+                },
+              ],
+              datasets: [
+                {
+                  borderColor: ["#202020"],
+                },
+              ],
+            };
 
-      var chart = new ApexCharts(document.getElementById("chart"), options);
-      chart.render();
+            var chart = new ApexCharts(document.getElementById("chart"), options);
+            chart.render();
+
+      var data = [];
+      var dates = [];
+      {% for w in arr %}
+          data.push({{ w.weight }});
+          dates.push('{{ w.date }}');
+      {% endfor %}
 
       var options = {
-        series: [
-          {
-            name: "Sales",
-            data: [
-              4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5,
-            ],
+          series: [{
+              name: "Weight",
+              data: data
+          }],
+          chart: {
+              height: 350,
+              type: "line",
           },
-        ],
-        chart: {
-          height: 350,
-          type: "line",
-        },
-        forecastDataPoints: {
-          count: 7,
-        },
-        stroke: {
-          width: 5,
-          curve: "smooth",
-        },
-        xaxis: {
-          type: "datetime",
-          categories: [
-            "1/11/2000",
-            "2/11/2000",
-            "3/11/2000",
-            "4/11/2000",
-            "5/11/2000",
-            "6/11/2000",
-            "7/11/2000",
-            "8/11/2000",
-            "9/11/2000",
-            "10/11/2000",
-            "11/11/2000",
-            "12/11/2000",
-            "1/11/2001",
-            "2/11/2001",
-            "3/11/2001",
-            "4/11/2001",
-            "5/11/2001",
-            "6/11/2001",
-          ],
-          tickAmount: 10,
-          labels: {
-            formatter: function (value, timestamp, opts) {
-              return opts.dateFormatter(new Date(timestamp), "dd MMM");
-            },
+          forecastDataPoints: {
+              count: 7,
           },
-        },
-        title: {
-          text: "Weight Analysis",
-          align: "left",
-          style: {
-            fontSize: "16px",
-            color: "#fff",
+          stroke: {
+              width: 5,
+              curve: "smooth",
           },
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            shade: "dark",
-            gradientToColors: ["#FDD835"],
-            shadeIntensity: 1,
-            type: "horizontal",
-            opacityFrom: 1,
-            opacityTo: 1,
-            stops: [0, 100, 100, 100],
+          xaxis: {
+              type: "datetime",
+              categories: dates.map(date => new Date(date).getTime()), // Convert dates to milliseconds since epoch
+              tickAmount: 10,
+              labels: {
+                  formatter: function (value, timestamp, opts) {
+                      return opts.dateFormatter(new Date(timestamp), "dd MMM");
+                  },
+              },
           },
-        },
-        yaxis: {
-          min: -10,
-          max: 40,
-        },
+          title: {
+              text: "Weight Analysis",
+              align: "left",
+              style: {
+                  fontSize: "16px",
+                  color: "#fff",
+              },
+          },
+          fill: {
+              type: "gradient",
+              gradient: {
+                  shade: "dark",
+                  gradientToColors: ["#FDD835"],
+                  shadeIntensity: 1,
+                  type: "horizontal",
+                  opacityFrom: 1,
+                  opacityTo: 1,
+                  stops: [0, 100, 100, 100],
+              },
+          },
+          yaxis: {
+              min: 0,
+              max: 150,
+          },
       };
 
       var chart2 = new ApexCharts(document.querySelector("#chart2"), options);
       chart2.render();
+
+
+
+      //chart3
+      var options = {
+        series: [{
+        name: 'Inflation',
+        data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
+      }],
+        chart: {
+        height: 350,
+        type: 'bar',
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 10,
+          dataLabels: {
+            position: 'top', // top, center, bottom
+          },
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ["#304758"]
+        }
+      },
+      
+      xaxis: {
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        position: 'top',
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        crosshairs: {
+          fill: {
+            type: 'gradient',
+            gradient: {
+              colorFrom: '#D8E3F0',
+              colorTo: '#BED1E6',
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5,
+            }
+          }
+        },
+        tooltip: {
+          enabled: true,
+        }
+      },
+      yaxis: {
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+          formatter: function (val) {
+            return val + "%";
+          }
+        }
+      
+      },
+      title: {
+        text: 'Monthly Inflation in Argentina, 2002',
+        floating: true,
+        offsetY: 330,
+        align: 'center',
+        style: {
+          color: '#444'
+        }
+      }
+      };
+
+      var chart3 = new ApexCharts(document.querySelector("#chart3"), options);
+      chart3.render();
     </script>
     {% endblock %}
   </body>

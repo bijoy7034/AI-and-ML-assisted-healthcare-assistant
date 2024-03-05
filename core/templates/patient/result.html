@@ -2,12 +2,8 @@
 
 {% block body %}
 
-
  <div id="content-wrapper">
-
         <div class="container-fluid">
-
-            <!-- Breadcrumbs-->
             <ol class="breadcrumb" style="background-color: #20202097;">
               <li class="breadcrumb-item">
                   <a href="">Dashboard</a>
@@ -37,11 +33,12 @@
                                   <td>{{ d.disease }}</td>
                                   {% if d.medicine == "" %}
                                   <td>
-                                    <span class="badge badge-pill badge-success">Get Medicine</span>
+                                    <button class="btn btn-sm btn-outline-warning btn_med" type="button" data-sid="{{d.id}}">Get Medicine Recomendation</button>
                                   </td>
                                   {% else %}
                                   <td>
-                                    <span class="badge badge-pill badge-primary">{{d.medicine}}</span>
+                                    {{d.medicine}} <br>
+                                    {{d.medicine2}}
                                   </td>
                                   {% endif %}
                                   <td>
@@ -57,25 +54,42 @@
                               </tr>
                               <tr id="{{d.id}}" class=" collapse fade">
                                 <td colspan="5">
-                                  <h3 class="text-primary">Details of Diagnosis</h3>
-                                  <p>Predicted : <span class="text-primary">{{d.disease}}</span></p>
-                                  <p class="text-primary">Symptoms</p>
-                                  <ol class="container">
-                                    <div class="">
-                                      <ol class="d-flex justify-content-start">
-                                        <div class="mr-4">
-                                          <li>{{d.s1}}</li>
-                                        <li>{{d.s2}}</li>
-                                        <li>{{d.s3}}</li>
-                                        </div>
-                                        <div class="ml-5">
-                                          <li>{{d.s4}}</li>
-                                          <li>{{d.s5}}</li>
-                                        </div>
-                                      </ol>
-                                      
+                                  <div class="d-flex justify-content-between">
+                                    <div class="conatiner">
+                                      <h3 class="text-primary">Details of Diagnosis</h3>
+                                    <p>Predicted : <span class="text-primary">{{d.disease}}</span></p>
+                                    <p class="text-primary">Symptoms</p>
+                                    <ol class="container">
+                                      <div class="">
+                                        <ol class="d-flex justify-content-start">
+                                          <div class="mr-4">
+                                            <li>{{d.s1}}</li>
+                                          <li>{{d.s2}}</li>
+                                          <li>{{d.s3}}</li>
+                                          </div>
+                                          <div class="ml-5">
+                                            <li>{{d.s4}}</li>
+                                            <li>{{d.s5}}</li>
+                                          </div>
+                                        </ol>
+                                        
+                                      </div>
+                                    </ol>
                                     </div>
-                                  </ol>
+                                    <div class="p-5"></div>
+                                    <div class="container pl-5">
+                                      <h3 class="text-primary">Vitals</h3>
+                                      <p class="text-primary">Vitals at the time of Diagnosis</p>
+                                      <ul>
+                                      
+                                        <li class="text-secondary">Pressure (Systolic) : <span class="text-light">{{d.blood_low}} mmHg</span></li>
+                                        <li class="text-secondary">Pressure (Daistolic) : <span class="text-light">{{d.blood_high}}mmHg</span></li>
+                                        <li class="text-secondary">Weight :  <span class="text-light">{{d.weight}} Kg</span></li>
+                                        <li class="text-secondary">Diagnosised Time :  <span class="text-light">{{d.created_on}}</span></li>
+                                        
+                                      </ul>
+                                    </div>
+                                  </div>
                                 </td>
                               </tr>
       
@@ -133,14 +147,7 @@
 
 
 
-              
-
             </div>
-
-
-                
-
-
             </div>
         </div>
         </div>

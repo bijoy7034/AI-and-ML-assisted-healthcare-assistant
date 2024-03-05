@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .models import Medical, User, Ment, Profile, Hospitals, WeightRecord
+from .models import Medical, User, Ment, Profile, Hospitals, WeightRecord, Doctors
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +11,9 @@ from django.contrib import messages
 from datetime import datetime
 import joblib as joblib
 from django.contrib.auth.hashers import make_password
+from django.db import connection
+from openai import OpenAI
+from django.contrib.auth.hashers import check_password
 
 
 def home(request):
@@ -25,7 +28,6 @@ def registerUser(request):
 		email = request.POST['email']
 		password = request.POST['password']
 		password = make_password(password)
-
 		a = User(username=username, email=email, password=password, is_patient=True)
 		a.save()
 		messages.success(request, 'Account Was Created Successfully')
@@ -61,14 +63,37 @@ def patient_home(request):
 	medical1 = Medical.objects.filter(medicine='See Doctor').count()
 	medical2 = Medical.objects.all().count()
 	medical3 = int(medical2) - int(medical1)
+ 
 
+	with connection.cursor() as cursor:
+			cursor.execute("""
+				SELECT symptom, COUNT(symptom) AS frequency
+				FROM (
+					SELECT s1 AS symptom FROM core_medical WHERE patient_id = %s
+					UNION ALL
+					SELECT s2 AS symptom FROM core_medical WHERE patient_id = %s
+					UNION ALL
+					SELECT s3 AS symptom FROM core_medical WHERE patient_id = %s
+					UNION ALL
+					SELECT s4 AS symptom FROM core_medical WHERE patient_id = %s
+					UNION ALL
+					SELECT s5 AS symptom FROM core_medical WHERE patient_id = %s
+				) AS all_symptoms
+				GROUP BY symptom
+				ORDER BY frequency DESC
+				LIMIT 5
+			""", (request.user.id, request.user.id, request.user.id, request.user.id, request.user.id))
+
+			rows = cursor.fetchall()
 	user_id = request.user.id
+	print(rows)
+	weight_arr = WeightRecord.objects.all().filter(user = user_id)
 	user_profile = Profile.objects.filter(user_id=user_id)
 	if not user_profile:
-		context = {'profile_status':'Please Create Profile To Continue', 'status': '0', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3}
+		context = {'profile_status':'Please Create Profile To Continue', 'status': '0', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3, 'arr' : weight_arr, 'sympt' : rows}
 		return render(request, 'patient/home.html', context)
 	else:
-		context = {'status':'1', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3}
+		context = {'status':'1', 'doctor':doctor, 'ment':appointment, patient:'patient', 'drug':medical3, 'arr' : weight_arr,  'sympt' : rows }
 		return render(request, 'patient/home.html', context)
 
 
@@ -112,6 +137,7 @@ def MakePredict(request):
 	s4 = request.POST.get('s4')
 	s5 = request.POST.get('s5')
 	id = request.POST.get('id')
+	user_id = request.user.id
 	
 	list_b = [s1,s2,s3,s4,s5]
 	print(list_b)
@@ -138,10 +164,13 @@ def MakePredict(request):
 
 	clf = joblib.load('model/naive_bayes.pkl')
 
+	
 	prediction = clf.predict(test)
 	result = prediction[0]
+ 
+	profile_details = Profile.objects.get(user_id = user_id )
 
-	a = Medical(s1=s1, s2=s2, s3=s3, s4=s4, s5=s5, disease=result, patient_id=id)
+	a = Medical(s1=s1, s2=s2, s3=s3, s4=s4, s5=s5, disease=result, patient_id=id, blood_high = profile_details.blood_high, blood_low = profile_details.blood_low, bmi = profile_details.bmi, weight = profile_details.weight )
 	a.save()
 
 	return JsonResponse({'status':result})			
@@ -163,7 +192,8 @@ def locationServices(request):
 def patient_result(request):
 	user_id = request.user.id
 	disease = Medical.objects.all().filter(patient_id=user_id)
-	context = {'disease':disease, 'status':'1'}
+	profile_details = Profile.objects.all().filter(user_id = user_id)
+	context = {'disease':disease, 'status':'1', 'profile' :  profile_details}
 	return render(request, 'patient/result.html', context)
 
 
@@ -187,6 +217,46 @@ def MakeMent(request):
 		return JsonResponse({'status':'error'})		
 
 
+@csrf_exempt
+def med_predict(request):
+    disease = request.POST.get('disease')
+    userid = request.user.id
+    med =  Medical.objects.get(id = disease) 
+    dob = Profile.objects.filter(user_id=userid).values_list('birth_date', flat=True)
+    dob = list(dob)
+    dob = dob[0]
+    print('Date of birth is',dob)
+    dob = str(dob)
+    dob = dob[0:4]
+    print('New Date of birth is',dob)
+    dob = int(dob)
+    age = 2024 - dob
+    print('Patient Age is',age)
+    try:
+        d = med.disease 
+        a = age 
+
+        client = OpenAI(api_key="")
+        stream = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"Suggest two drugs and their details for {d} and age: {a} available in India. Do not give a description; suggest only the name of the drug and company name in brackets (important)"}],
+        stream=True,)
+            
+        suggestions = []
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                suggestion = chunk.choices[0].delta.content.strip()  
+                suggestions.append(suggestion)
+        suggestions_str = ''.join(suggestions)
+        split_index = suggestions_str.find('2.')
+        first_line = suggestions_str[:split_index]
+        second_line = suggestions_str[split_index:]
+        med.medicine = first_line
+        med.medicine2 = second_line
+        med.save()
+        return redirect('result')
+    except Exception as e:
+        return JsonResponse({'status':'error'})	
 
 
 def patient_ment(request):
@@ -237,10 +307,11 @@ def medical_profile(request):
 def weight(request):
     user_id = request.user.id
     today = WeightRecord.objects.filter(date = datetime.now().date()).exists()
+    weight_arr = WeightRecord.objects.all().filter(user = user_id)
     if today:
-        context = {'status' : '1', 'today' : '1'}
+        context = {'status' : '1', 'today' : '1', 'arr': weight_arr}
     else:
-        context = {'status' : '1' , 'today' : '0'}
+        context = {'status' : '1' , 'today' : '0', 'arr': weight_arr}
     if request.method == 'POST':
         weight = request.POST.get('weight')
         low = request.POST.get('low')
@@ -256,7 +327,7 @@ def weight(request):
         bmi = (float(weight))/(h**2)
         profile.bmi = bmi
         profile.save()
-        context = {'status' : '1', 'today' : '1'}
+        context = {'status' : '1', 'today' : '1', 'arr': weight_arr}
         return render(request, 'patient/weight.html', context)
     return render(request, 'patient/weight.html', context)
 
@@ -267,3 +338,70 @@ def settings(request):
 def logoutView(request):
 	logout(request)
 	return redirect('login')
+
+
+
+#doctor login
+
+def doctorLogin(request):
+    return render(request, 'docLogin.html')
+
+
+
+
+#hospital register
+
+def hospitalRegister(request):
+    if request.method == 'POST':
+        name = request.POST['username']
+        district  = request.POST['district']
+        city = request.POST['city']
+        pincode = request.POST['pincode']
+        address = request.POST['address']
+        password = make_password(request.POST['password'])
+        print(name, password, city, district, name, pincode, address)
+        hosp = Hospitals(Hospital_Name = name, District = district, CityTown = city, Pincode = pincode, Address = address, Password = password)
+        hosp.save()
+        messages.success(request,"Hospital Account Created Successfully")
+        return redirect("hosLog")
+    return render(request, 'hospitalRegister.html')
+
+
+def HospitalLogin(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        try:
+            hosp = Hospitals.objects.get(Hospital_Name=username)
+            if check_password(password, hosp.Password):
+                print("Login Success")
+                request.session['hospital_id'] = hosp.id
+                return redirect('HospHome')  
+            else:
+                messages.error(request, "Incorrect password")
+        except Hospitals.DoesNotExist:
+            messages.error(request, "Hospital not found")
+    return render(request, 'hospitalLogin.html')
+
+def hospitalLogout(request):
+    logout(request) #delete sessions
+    return redirect("home") 
+
+def HospitalHome(request):
+    return render(request, 'doctor/home.html')
+
+def DoctorsView(request):
+    docLists = Doctors.objects.all()
+    context = {'doctors' : docLists}
+    if request.method == 'POST':
+        name = request.POST['name']
+        spec = request.POST['spec']
+        username = request.POST['username']
+        password = request.POST['password']
+        degree = request.POST['degree']
+        password = make_password(password)
+        print(name, username, password, degree, spec)
+        doc = Doctors(Username = username, Name = name, Specification = spec, Password = password, Degree = degree)
+        doc.save()
+    return render(request, 'doctor/doctors.html', context)
+

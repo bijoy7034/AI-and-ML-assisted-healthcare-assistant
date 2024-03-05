@@ -17,10 +17,15 @@ class Medical(models.Model):
     s5 = models.CharField(max_length=200)
     disease = models.CharField(max_length=200)
     medicine = models.CharField(max_length=200)
+    medicine2 = models.CharField(max_length=200 , null= True)
     patient = models.ForeignKey(User, related_name="patient", on_delete= models.CASCADE)
     doctor = models.ForeignKey(User, related_name="doctor", on_delete= models.CASCADE, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
     appointment = models.BooleanField(default = False)
+    blood_low = models.IntegerField(null =True)
+    blood_high = models.IntegerField(null =True)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, null = True)  
+    bmi = models.DecimalField(max_digits = 7,decimal_places=2, null= True)
 
     def __str__(self):
         return self.disease
@@ -33,7 +38,6 @@ class Ment(models.Model):
     ment_day = models.DateTimeField(null=True)
     medical = models.ForeignKey(Medical, related_name="medical", on_delete= models.CASCADE, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return self.approved
 
@@ -67,6 +71,7 @@ class Hospitals(models.Model):
     CityTown = models.CharField(max_length=255, default='')
     Pincode = models.CharField(max_length=255, default='')
     Address = models.CharField(max_length=255, default='')
+    Password = models.CharField(max_length = 255, default = '')
     
     def __str__(self):
         return self.Hospital_Name
@@ -81,3 +86,10 @@ class WeightRecord(models.Model):
 
     class Meta:
         ordering = ['-date']  # Order records by most recent first
+
+class Doctors(models.Model):
+    Username = models.CharField(max_length = 255, default = '')
+    Name = models.CharField(max_length = 255, default = '')
+    Specification = models.CharField(max_length = 255, default = '')
+    Password = models.CharField(max_length = 255, default = '')
+    Degree = models.CharField(max_length = 255, default = '')

@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-
+#patient
 path('', views.home, name='home'),
 path('register/', views.registerView, name='reg'),
 path('reg_user/', views.registerUser, name='reg_user'),
@@ -22,5 +22,18 @@ path('ment/', views.patient_ment, name='ment_list'),
 path('medical_profile/', views.medical_profile, name='med_pro'),
 path('logout/', views.logoutView, name='logout'),
 path('weight/', views.weight, name='weight'),
-path('settings/', views.settings, name='set')
+path('settings/', views.settings, name='set'),
+path('medicine/', views.med_predict, name='medi'),
+
+
+#doctors
+path('doclogin/', views.doctorLogin, name='docLogin'),
+
+
+#Hospiatal  staff
+path("hospital/register", views.hospitalRegister, name='hosReg'),
+path("hospital/login", views.HospitalLogin, name='hosLog'),
+path('hospital/home', views.HospitalHome, name= 'HospHome' ),
+path('hospital/logout/', views.hospitalLogout, name='Hosplogout'),
+path('hospital/doctors', views.DoctorsView, name='docs'),
 ]

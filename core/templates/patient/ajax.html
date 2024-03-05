@@ -100,5 +100,28 @@
         },
       });
     });
+
+
+    $("#tbody").on("click", ".btn_med", function () {
+      console.log("Button Symptoms Clicked");
+      let disease = $(this).attr("data-sid");
+      var userid = $("#tbody #user_id").val();
+
+      console.log("Prediction ID is", disease);
+      console.log("User ID is", userid);
+
+      mydata = { disease: disease, userid: userid };
+      $.ajax({
+        url: "{% url 'medi' %}",
+        method: "POST",
+        data: mydata,
+
+        success: function (data) {
+          console.log("Data Sent To The Backend");
+          location.reload();
+        },
+
+      });
+    });
   });
 </script>
