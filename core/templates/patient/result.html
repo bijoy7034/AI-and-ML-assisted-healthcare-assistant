@@ -43,7 +43,7 @@
                                   {% endif %}
                                   <td>
                                       {% if d.appointment == False %}
-                                      <input class="btn btn-primary btn-sm btn_ment" type="button" data-sid="{{d.id}}" value="Request">
+                                      <a href="{% url 'app' param1=d.id param2=d.disease %}"><button class="btn btn-primary">Doctor Advice</button></a>
 
                                       {% else %}
                                       <input class="btn btn-success btn-sm btn_ment" disabled type="button" data-sid="{{d.id}}" value="Requested">
@@ -153,4 +153,3 @@
         </div>
 
 {% endblock %}
-

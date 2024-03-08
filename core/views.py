@@ -59,7 +59,7 @@ def loginView(request):
 def patient_home(request):
 	doctor = User.objects.filter(is_doctor=True).count()
 	patient = User.objects.filter(is_patient=True).count()
-	appointment = Ment.objects.filter(approved=True).count()
+	appointment = Ment.objects.filter(patient = request.user.id).count()
 	medical1 = Medical.objects.filter(medicine='See Doctor').count()
 	medical2 = Medical.objects.all().count()
 	medical3 = int(medical2) - int(medical1)
@@ -190,31 +190,37 @@ def locationServices(request):
 
 
 def patient_result(request):
-	user_id = request.user.id
-	disease = Medical.objects.all().filter(patient_id=user_id)
-	profile_details = Profile.objects.all().filter(user_id = user_id)
-	context = {'disease':disease, 'status':'1', 'profile' :  profile_details}
-	return render(request, 'patient/result.html', context)
+    user_id = request.user.id
+    hosp = Hospitals.objects.all().filter(Available =True)
+    disease = Medical.objects.all().filter(patient_id=user_id)
+    profile_details = Profile.objects.all().filter(user_id = user_id)
+    context = {'disease':disease, 'status':'1', 'profile' :  profile_details, 'Hospitals' : hosp}
+    return render(request, 'patient/result.html', context)
 
 
 @csrf_exempt
-def MakeMent(request):
-	disease = request.POST.get('disease')
-	userid = request.POST.get('userid')
-	try:
-		check_medical = Ment.objects.filter(medical_id=disease).exists()
-		if(check_medical == False):
-			a = Ment(medical_id=disease, patient_id=userid)
-			app = Medical.objects.get(id=disease) 
-			app.appointment = True
-			a.save()
-			app.save()
-			return JsonResponse({'status':'saved'})
-		else:
-			print('Appointment Exist')
-			return JsonResponse({'status':'exist'})
-	except Exception as e:
-		return JsonResponse({'status':'error'})		
+def appointment(request, param1, param2):
+    print(param1)
+    print(param2)
+    userId = request.user.id
+    hosp = Hospitals.objects.all().filter(Available =True)
+    med = Medical.objects.get(id = param1)
+    diagnosis_id = param1
+    if request.method == 'POST' :
+        hospital = request.POST.get('hosp')
+        doc = request.POST.get('doctor')
+        mode = request.POST.get('app')
+        check_medical = Ment.objects.filter(medical=diagnosis_id).exists()
+        if check_medical == False:
+            app = Medical.objects.get(id = diagnosis_id)
+            d = Doctors.objects.get(id = doc)
+            a = Ment(patient = userId, doctor = doc, medical = diagnosis_id, appointment = mode, hospital = hospital, Doctor_Name= d.Name , Disease = app.disease )
+            app.appointment = True
+            app.save()
+            a.save()
+            return redirect('result')
+    context = {'status' : '1', 'Hospitals' : hosp, 'd' : med }
+    return render(request, 'patient/appointment.html' , context)
 
 
 @csrf_exempt
@@ -261,10 +267,21 @@ def med_predict(request):
 
 def patient_ment(request):
 	user_id = request.user.id
-	appointment = Ment.objects.all().filter(patient_id=user_id)
+	appointment = Ment.objects.all().filter(patient= user_id)
 	context = {'ment':appointment, 'status':'1'}
 	return render(request, 'patient/ment.html', context)
 
+def ment(request):
+    user_id = request.user.id
+    appo = Ment.objects.all().filter(patient = user_id)
+    docs = []
+    med = []
+    for a in appo:
+        doct = Doctors.objects.get(id = a.doctor)
+        medi = Medical.objects.get(id = a.medical) 
+        docs.append(doct)
+        med.append(medi)
+        
 
 def profile_details(request):
     user_id = request.user.id
@@ -294,7 +311,7 @@ def medical_profile(request):
         bmi = (float(w))/(h**2)
         profile.bmi = bmi
         today_date = datetime.now().date()
-        weight = WeightRecord(user = user_id, date = today_date, weight = w, note = '')
+        weight = WeightRecord(user = user_id, date = today_date, weight = w)
         weight.save()
         profile.save()
     if profile.medical_profile == False:
@@ -360,7 +377,7 @@ def hospitalRegister(request):
         address = request.POST['address']
         password = make_password(request.POST['password'])
         print(name, password, city, district, name, pincode, address)
-        hosp = Hospitals(Hospital_Name = name, District = district, CityTown = city, Pincode = pincode, Address = address, Password = password)
+        hosp = Hospitals(Hospital_Name = name, District = district, CityTown = city, Pincode = pincode, Address = address, Password = password, Available = True)
         hosp.save()
         messages.success(request,"Hospital Account Created Successfully")
         return redirect("hosLog")
@@ -375,7 +392,7 @@ def HospitalLogin(request):
             hosp = Hospitals.objects.get(Hospital_Name=username)
             if check_password(password, hosp.Password):
                 print("Login Success")
-                request.session['hospital_id'] = hosp.id
+                request.session['hospital'] = hosp.Hospital_Name
                 return redirect('HospHome')  
             else:
                 messages.error(request, "Incorrect password")
@@ -391,7 +408,9 @@ def HospitalHome(request):
     return render(request, 'doctor/home.html')
 
 def DoctorsView(request):
-    docLists = Doctors.objects.all()
+    hospital_name = request.session.get('hospital')
+    docLists = Doctors.objects.all().filter(Hospital=hospital_name)
+    print(hospital_name)
     context = {'doctors' : docLists}
     if request.method == 'POST':
         name = request.POST['name']
@@ -401,7 +420,52 @@ def DoctorsView(request):
         degree = request.POST['degree']
         password = make_password(password)
         print(name, username, password, degree, spec)
-        doc = Doctors(Username = username, Name = name, Specification = spec, Password = password, Degree = degree)
+        doc = Doctors(Username = username, Name = name, Specification = spec, Password = password, Degree = degree, Hospital = hospital_name)
         doc.save()
     return render(request, 'doctor/doctors.html', context)
 
+def get_doctors(request):
+    hospital_name = request.GET.get('hospital_id')
+    docLists = Doctors.objects.all().filter(Hospital = hospital_name).values('id', 'Name', 'Specification')
+    docLists = list(docLists)
+    return JsonResponse({'doctors': docLists})
+
+def hospitalAppointments(request):
+    hospital_name = request.session.get('hospital')
+    apps = Ment.objects.all().filter(hospital = hospital_name)
+    doctors = []
+    patients =[]
+    appoint = []
+    data_list = []
+    mode = []
+    med = []
+    pat = []
+    for app in apps:
+        doctor = Doctors.objects.get(id=app.doctor)
+        patient = User.objects.get(id=app.patient)
+        appoint.append(app.id)
+        doctors.append(doctor.Name)
+        patients.append(patient.username)
+        mode.append(app.appointment)
+        med.append(app.medical)
+        pat.append(app.patient)
+    for doctor, patient, appointment, mode, med, pat in zip(doctors, patients, appoint, mode, med, pat):
+        data_dict = {'doctor': doctor, 'patient': patient, 'appointment': appointment, 'mode': mode, 'med': med, 'pat' :pat}
+        data_list.append(data_dict)
+    print(data_list)
+    arr = zip(doctors, patients, appoint)
+    context = {'apps': data_list }
+    return render(request, 'doctor/appointments.html', context)
+
+@csrf_exempt
+def appointmentDetails(request, param1, param2, param3):
+    med = Medical.objects.get(id = param1)
+    user_profile = Profile.objects.filter(user_id=param2)
+    app_id = param3
+    a = Ment.objects.get(id = app_id)
+    if request.method == 'POST':
+        dateTime = request.POST.get( "datetime" )
+        a.my_time_field = dateTime
+        a.save()
+    context = {'d' : med, 'p': user_profile, 'a' : a}
+    return render(request,'doctor/appDetails.html', context)

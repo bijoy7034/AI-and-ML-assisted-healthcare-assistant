@@ -6,7 +6,9 @@
   list-style: none;
   margin: 0px;
   padding: 0px; }
-
+.bootstrap-datetimepicker-widget.dropdown-menu  {
+    width: 250px;
+}
 a {
   text-decoration: none;
   transition: all 0.3s ease-in-out; }
@@ -3374,7 +3376,8 @@ h6 {
     padding-top: 70px; }
 
   .footer-bottom {
-    margin-top: 35px; } }
+    margin-top: 35px;
+} }
 /*---------------------------------------------------- */
 
 /*# sourceMappingURL=style.css.map */

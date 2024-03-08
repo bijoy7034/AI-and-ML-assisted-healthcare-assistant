@@ -1,5 +1,30 @@
 <script type="text/javascript">
   $(document).ready(function () {
+    $('#hospital-select').change(function() {
+      
+          var hospitalId = $(this).val();
+          $.ajax({
+              url: '{% url  "get_doctors" %}',
+              type: 'GET',
+              data: {
+                  'hospital_id': hospitalId
+              },
+              success: function(response) {
+                  $('#doctor-select').empty();
+                  $.each(response.doctors, function(index, doctor) {
+                      $('#doctor-select').append('<option value="' + doctor.id + '">' + doctor.Name + "  (" +  doctor.Specification + ") " +  '</option>');
+                  });
+              }
+          });
+      });
+      $('.doctor-advice-btn').on('click', function() {
+        var rowId = $(this).data('row-id'); 
+        var rowContent = $('#' + rowId).html(); 
+        $('.modal-body').html(rowContent);
+    });
+
+
+
     // Predict Disease
     $("#predict_btn").click(function () {
       console.log("Button Predict Clicked");
@@ -45,53 +70,25 @@
       }
     });
 
-    // Make Appointment
-    $("#tbody").on("click", ".btn_ment", function () {
-      console.log("Button Appointment Clicked");
-      let disease = $(this).attr("data-sid");
-      var userid = $("#tbody #user_id").val();
 
-      console.log("Prediction ID is", disease);
-      console.log("User ID is", userid);
 
-      mydata = { disease: disease, userid: userid };
-      $.ajax({
-        url: "{% url 'ment' %}",
-        method: "POST",
-        data: mydata,
 
-        success: function (data) {
-          x = data.status;
-          console.log("Data Sent To The Backend");
-          console.log("Appointment Status Is ", x);
 
-          if (x == "saved") {
-            $("#ment_result").html("");
-            $("#ment_result").append("Appointment Was Successfully Requested");
-            location.reload();
-          } else if (x == "exist") {
-            $("#ment_result").html("");
-            $("#ment_result").append("Appointment Request Exist");
-          } else {
-            $("#ment_result").html("");
-            $("#ment_result").append("Something Went Wrong");
-          }
-        },
-      });
-    });
+
 
     // Make Appointment
     $("#tbody").on("click", ".btn_view", function () {
       console.log("Button Symptoms Clicked");
       let disease = $(this).attr("data-sid");
       var userid = $("#tbody #user_id").val();
+      
 
       console.log("Prediction ID is", disease);
       console.log("User ID is", userid);
 
       mydata = { disease: disease, userid: userid };
       $.ajax({
-        url: "{% url 'ment' %}",
+        url: "",
         method: "POST",
         data: mydata,
 

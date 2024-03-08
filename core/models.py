@@ -30,16 +30,6 @@ class Medical(models.Model):
     def __str__(self):
         return self.disease
     
-class Ment(models.Model):
-    approved = models.BooleanField(default=False)
-    time = models.CharField(max_length=200, null=True)
-    patient = models.ForeignKey(User, related_name="pat", on_delete= models.CASCADE)
-    doctor = models.ForeignKey(User, related_name="dor", on_delete= models.CASCADE, null=True)
-    ment_day = models.DateTimeField(null=True)
-    medical = models.ForeignKey(Medical, related_name="medical", on_delete= models.CASCADE, null=True)
-    created_on = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return self.approved
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -72,20 +62,22 @@ class Hospitals(models.Model):
     Pincode = models.CharField(max_length=255, default='')
     Address = models.CharField(max_length=255, default='')
     Password = models.CharField(max_length = 255, default = '')
+    Available = models.BooleanField( default=False)
     
     def __str__(self):
         return self.Hospital_Name
-    
+  
+
 class WeightRecord(models.Model):
     user = models.IntegerField(null = False)
     date = models.DateField(auto_now_add=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2)  # 999.99 kg
-    sleep = models.DecimalField(max_digits=5, decimal_places = 2, blank=True) 
+    sleep = models.DecimalField(max_digits=5, decimal_places = 2, null = True) 
     blood_low = models.IntegerField(null =True)
     blood_high = models.IntegerField(null =True)
 
     class Meta:
-        ordering = ['-date']  # Order records by most recent first
+        ordering = ['-date']  
 
 class Doctors(models.Model):
     Username = models.CharField(max_length = 255, default = '')
@@ -93,3 +85,15 @@ class Doctors(models.Model):
     Specification = models.CharField(max_length = 255, default = '')
     Password = models.CharField(max_length = 255, default = '')
     Degree = models.CharField(max_length = 255, default = '')
+    Hospital = models.CharField(max_length = 255, default = '')
+
+class Ment(models.Model):
+    patient = models.IntegerField( null = True,)
+    doctor = models.IntegerField( null = True,)
+    medical = models.IntegerField( null = True,)
+    hospital = models.CharField(null = True, max_length = 255,)
+    appointment = models.CharField(null = True, max_length = 255,)
+    my_time_field = models.DateTimeField(null = True)
+    Doctor_Name = models.CharField(null = True, max_length = 255,)
+    Disease = models.CharField(null = True, max_length = 255,)
+    

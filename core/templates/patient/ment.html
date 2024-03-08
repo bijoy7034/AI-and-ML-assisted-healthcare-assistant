@@ -21,67 +21,49 @@
                 <thead class="thead-primary text-primary">
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Patient</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Day</th>
-                        <th scope="col">Time</th>
                         <th scope="col">Doctor</th>
-                        <th scope="col">Doctor Contact</th>
-
-
+                        <th scope="col">Status</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Mode</th>
+                        <th scope="col">Disease Predicted</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
                     <input type="hidden"  value="{{ user.id }}" name="" id="user_id">
   
-                  {% for d in ment %}
-                  <tr>
-                      <td>{{ d.id }}</td>
+                    
+                    {% for m in ment %}
+                        <tr>
+                            <td>{{m.id}}</td>
+                            <td>{{m.Doctor_Name}}</td>
+                            <td>
+                            {% if m.my_time_field is null %}
+                            <span class="badge badge-pill badge-warning text-light">pending</span>
+                            {% else %}
+                            <span class="badge badge-pill badge-success text-light">scheduled
+                            </span>
+                            {% endif %}
+                                </td>
+                                <td>
+                                    
+                                    {% if m.my_time_field is null %}
+                                    Time not set
 
-
-                      <td>{{ d.patient.username }}</td>
-
-
-                      {% if d.approved == False %}
-                     <td>
-                        <span class="badge badge-pill badge-warning text-light">pending</span>
-                     </td>
-                      {% else %}
-                      <td>{{ d.medicine }}</td>
-                      {% endif %}
-
-
-                      {% if d.ment_day == None %}
-                      <td>Not Set</td>
-                      {% else %}
-                      <td>{{ d.ment_day|date:"M d, Y" }}</td>
-                      {% endif %}
-
-
-                      {% if d.time == None %}
-                      <td>Not Set</td>
-                      {% else %}
-                      <td>{{ d.time }}</td>
-                      {% endif %}
-
-
-                      {% if d.doctor.username == Null %}
-                      <td>None</td>
-                      {% else %}
-                      <td>{{ d.doctor.username }}</td>
-                      {% endif %}
-
-
-                      {% if d.doctor.phonenumber == Null %}
-                      <td>None</td>
-                      {% else %}
-                      <td>{{ d.doctor.phonenumber }}</td>
-                      {% endif %}
-                
-
-                  </tr>
-
-                  {% endfor %}
+                                    {% else %}
+                                    <span class="text-warning">{{m.my_time_field}}</span>
+                                    {% endif %}
+                                        
+                                </td>
+                                <td>
+                                    {{m.appointment}}
+                                </td>
+                                <td>
+                                    {{m.Disease}}
+                                </td>
+                        </tr>
+                    {% endfor %}
+                        
+                  
                       </tbody>
               </table>
             </div>

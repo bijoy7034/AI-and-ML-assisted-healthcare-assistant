@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Healthlink</title>
+    <title>Healthlink (Hospital)</title>
     <link
       rel="stylesheet"
       href="{% static 'core/css/bootstrap/four/bootstrap.css' %}"
@@ -15,14 +15,18 @@
       rel="stylesheet"
       type="text/css"
     />
+    <!-- Include Tempus Dominus DateTimePicker CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
+
   </head>
 
   <body id="page-top">
     <div id="wrapper" style="padding-top: 0px">
       <div class="mt-4">
         <center>
-          <h2 class="heading text-primary">
-            <i class="fa-solid fa-staff-snake text-primary"></i> Healthlink
+          <h2 class="heading text-success">
+            <i class="fa-solid fa-staff-snake text-success"></i> Healthlink
           </h2>
         </center>
         <ul class="sidebar navbar-nav">
@@ -36,6 +40,12 @@
             <a class="nav-link" href="{% url 'docs' %}">
                 <i class="fa-solid fa-user-doctor text-secondary"></i>
               <span class="ml-2">Doctors</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'hospApps' %}">
+              <i class="fa-solid fa-wheelchair-move"></i>
+              <span class="ml-2" style="color: white">Appointment</span>
             </a>
           </li>
           <li class="nav-item active">
@@ -90,7 +100,7 @@
             >
               Cancel
             </button>
-            <a class="btn btn-primary" href="{% url 'Hosplogout' %}">Logout</a>
+            <a class="btn btn-success" href="{% url 'Hosplogout' %}">Logout</a>
           </div>
         </div>
       </div>
